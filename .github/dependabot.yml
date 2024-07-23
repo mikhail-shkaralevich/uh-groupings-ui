@@ -12,3 +12,5 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 10
     target-branch: "devrc-2-5-0"
+
+    #comment
