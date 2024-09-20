@@ -26,7 +26,7 @@
         <angular-ui-bootstrap-version>2.5.0</angular-ui-bootstrap-version>
 
         <angularjs-version>1.8.3</angularjs-version>
-        <popper.js-version>1.16.1-lts</popper.js-version>
+        <popper.js-version>2.11.7</popper.js-version>
         <bootstrap-version>4.6.2</bootstrap-version>
 
         <lodash-version>4.17.21</lodash-version>
