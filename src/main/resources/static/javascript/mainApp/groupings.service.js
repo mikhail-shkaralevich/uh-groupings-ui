@@ -41,12 +41,14 @@
                         size,
                         sortBy,
                         isAscending,
+                        filter,
                         onSuccess,
                         onError) {
                 let endpoint = BASE_URL + "groupings/group?";
-                let params = { page, size, sortBy, isAscending };
+                let params = { page, size, sortBy, isAscending, filter };
                 let query = this.encodeParameterizedQueryString(params);
                 endpoint = endpoint + query;
+                console.log("URI!: " + endpoint);
                 dataProvider.loadDataWithBodyRetry(endpoint, groupPaths, onSuccess, onError);
             },
 
@@ -189,8 +191,8 @@
             /**
              * Add owners to owners group of grouping
              */
-            addOwnerships(path, newOwner, onSuccess, onError) {
-                let endpoint = BASE_URL + path + "/" + newOwner + "/addOwnerships";
+            addOwnerships(path, newOwner, ignoreLimit, onSuccess, onError) {
+                let endpoint = BASE_URL + path + "/" + newOwner + "/addOwnerships" + "?ignoreLimit=" + ignoreLimit;
                 dataProvider.updateData(endpoint, onSuccess, onError);
             },
 
