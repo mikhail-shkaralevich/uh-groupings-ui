@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -20,6 +21,7 @@ import edu.hawaii.its.groupings.service.EmailService;
 import edu.hawaii.its.api.type.ApiError;
 
 @ControllerAdvice
+@Component
 public class ErrorControllerAdvice {
 
     private static final Log logger = LogFactory.getLog(ErrorControllerAdvice.class);
@@ -37,14 +39,21 @@ public class ErrorControllerAdvice {
     public ResponseEntity<ApiError> handleWebClientResponseException
             (WebClientResponseException wcre) {
         emailService.sendWithStack(wcre, "Web Client Response Exception");
+
+        logger.info("WebClientResponseException is handled by the controller");
+
         ApiError.Builder errorBuilder = new ApiError.Builder()
                 .status((HttpStatus) wcre.getStatusCode())
                 .message("Web Client Response Exception")
                 .debugMessage(wcre.getMessage())
                 .timestamp(LocalDateTime.now());
-
         ApiError apiError = errorBuilder.build();
-        return buildResponseEntity(apiError, wcre);
+
+        String customLogMessage = null;
+        if (apiError.getStatus() == HttpStatus.CONFLICT)
+            customLogMessage = "409 CONFLICT: Max number of allowed owners is exceeded.";
+
+        return buildResponseEntity(apiError, wcre, customLogMessage);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -59,7 +68,7 @@ public class ErrorControllerAdvice {
 
         ApiError apiError = errorBuilder.build();
 
-        return buildResponseEntity(apiError, iae);
+        return buildResponseEntity(apiError, iae, null);
     }
 
     @ExceptionHandler(Exception.class)
@@ -74,7 +83,7 @@ public class ErrorControllerAdvice {
 
         ApiError apiError = errorBuilder.build();
 
-        return buildResponseEntity(apiError, exception);
+        return buildResponseEntity(apiError, exception, null);
     }
 
 
@@ -90,7 +99,7 @@ public class ErrorControllerAdvice {
 
         ApiError apiError = errorBuilder.build();
 
-      return buildResponseEntity(apiError, exception);
+      return buildResponseEntity(apiError, exception, null);
     }
 
     @ExceptionHandler({MessagingException.class, IOException.class})
@@ -105,7 +114,7 @@ public class ErrorControllerAdvice {
 
         ApiError apiError = errorBuilder.build();
 
-      return buildResponseEntity(apiError, e);
+      return buildResponseEntity(apiError, e, null);
     }
 
     @ExceptionHandler(UnsupportedOperationException.class)
@@ -120,10 +129,10 @@ public class ErrorControllerAdvice {
 
         ApiError apiError = errorBuilder.build();
 
-        return buildResponseEntity(apiError, nie);
+        return buildResponseEntity(apiError, nie, null);
     }
 
-    private ResponseEntity<ApiError> buildResponseEntity(ApiError apiError, Throwable cause) {
+    private ResponseEntity<ApiError> buildResponseEntity(ApiError apiError, Throwable cause, String customLogMessage) {
 
         String uid = null;
         User user = userContextService.getCurrentUser();
@@ -131,7 +140,10 @@ public class ErrorControllerAdvice {
             uid = user.getUid();
         }
 
-        logger.error("uid: " + uid + "; Exception: ", cause);
+        if (customLogMessage != null)
+            logger.error("uid: " + uid + "; Exception: " + customLogMessage);
+        else
+            logger.error("uid: " + uid + "; Exception: ", cause);
 
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
