@@ -9,7 +9,7 @@
      * @param groupingsService - service for creating requests to the groupings API
      * @param Message - display messages
      */
-    function HomeJsController($scope, $controller, groupingsService, Message) {
+    function HomeJsController($scope, $controller, groupingsService, userService, Message) {
 
         angular.extend(this, $controller('GeneralJsController', {$scope}));
 
@@ -18,13 +18,11 @@
             /**
              * Get the uid of the current user, set the uid to the scope in general controller
              */
-            groupingsService.getCurrentUser((res) => {
-                $scope.currentUser = {
-                    uid: res.data.uid,
-                    uhUuid: res.data.uhUuid
-                };
-                $scope.feedbackEmail = $scope.currentUser.uid + Message.Csv.EMAIL_SUFFIX;
-            });
+            userService.getCurrentUser().then((res) => {
+                $scope.currentUser = res;
+                console.log("currentUser: ");
+                console.log(res);
+            })
 
             /**
              * Get the number of memberships that the current user is associated with.
