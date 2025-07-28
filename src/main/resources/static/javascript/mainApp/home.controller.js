@@ -7,6 +7,7 @@
      * @param $scope - binding between controller and HTML page
      * @param $controller - service for instantiating controllers
      * @param groupingsService - service for creating requests to the groupings API
+     * @param userService - service for management of a logged-in user.
      * @param Message - display messages
      */
     function HomeJsController($scope, $controller, groupingsService, userService, Message) {
@@ -20,9 +21,7 @@
              */
             userService.getCurrentUser().then((res) => {
                 $scope.currentUser = res;
-                console.log("currentUser: ");
-                console.log(res);
-            })
+            });
 
             /**
              * Get the number of memberships that the current user is associated with.

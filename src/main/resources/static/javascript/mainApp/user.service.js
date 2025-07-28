@@ -1,16 +1,41 @@
 /* global UHGroupingsApp */
 
 (() => {
-    UHGroupingsApp.service("userService", function (groupingsService) {
+    /**
+     * Service for data access of a logged-in user.
+     * @name userService
+     */
+    UHGroupingsApp.service("userService", function ($q, groupingsService, $window) {
 
-        var currentUser = null;
-        var feedbackEmail = null;
-        var userPromise = null;
+        const USER_STORAGE_KEY = 'currentUserDataSession';
+        let currentUser = loadUserFromSessionStorage();
+        let userPromise = null;
+
+        function loadUserFromSessionStorage() {
+            try {
+                const userData = $window.sessionStorage.getItem(USER_STORAGE_KEY);
+                return userData ? JSON.parse(userData) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function saveUserToSessionStorage(user) {
+            try {
+                $window.sessionStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+            } catch (e) {
+                console.error("Error saving user to sessionStorage: ", e);
+            }
+        }
 
         return {
+            /**
+             * Fetches and returns the current user.
+             * Tries sessionStorage first, then makes API call and caches.
+             * @return {*|Promise} A promise that resolves with current user object.
+             */
             getCurrentUser() {
                 if (currentUser) {
-                    // if user data is already loaded, return it immediately as a resolved promise
                     return $q.when(currentUser);
                 }
                 if (userPromise) {
@@ -19,7 +44,7 @@
                 }
 
                 // No user loaded and no request in progress, make the API call
-                var deferred = $q.defer(); // Create a deferred object to turn the callback into a promise.
+                let deferred = $q.defer(); // Create a deferred object to turn the callback into a promise.
                 userPromise = deferred.promise;
 
                 groupingsService.getCurrentUser((res) => {
@@ -27,6 +52,7 @@
                         uid: res.data.uid,
                         uhUuid: res.data.uhUuid
                     };
+                    saveUserToSessionStorage(currentUser);
                     deferred.resolve(currentUser); // resolve the promise with the data.
                     userPromise = null;
                 });
@@ -34,9 +60,12 @@
                 return userPromise;
             },
 
-            clearUser() {
-                currentUser = null;
-                userPromise = null;
+            /**
+             * Returns logged-in user's UID.
+             * @return {String} UID.
+             */
+            getUid() {
+                return currentUser.uid;
             },
         };
     });
