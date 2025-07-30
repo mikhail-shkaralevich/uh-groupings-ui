@@ -42,30 +42,19 @@
                     // if a request is already in progress, return the existing promise
                     return userPromise;
                 }
-
+                
                 // No user loaded and no request in progress, make the API call
                 let deferred = $q.defer(); // Create a deferred object to turn the callback into a promise.
                 userPromise = deferred.promise;
 
                 groupingsService.getCurrentUser((res) => {
-                    currentUser = {
-                        uid: res.data.uid,
-                        uhUuid: res.data.uhUuid
-                    };
+                    currentUser = res;
                     saveUserToSessionStorage(currentUser);
                     deferred.resolve(currentUser); // resolve the promise with the data.
                     userPromise = null;
                 });
 
                 return userPromise;
-            },
-
-            /**
-             * Returns logged-in user's UID.
-             * @return {String} UID.
-             */
-            getUid() {
-                return currentUser.uid;
             },
         };
     });
