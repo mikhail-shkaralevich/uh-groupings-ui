@@ -10,10 +10,9 @@
      * @param $uibModal - the UI Bootstrap service for creating modals
      * @param dataProvider - service function that provides GET and POST requests for getting or updating data
      * @param groupingsService - service for requesting data from the groupings API
-     * @param userService - service for management of a logged-in user.
      * @param Message - display messages
      */
-    function AdminJsController($scope, $window, $uibModal, $controller, dataProvider, groupingsService, userService, Message) {
+    function AdminJsController($scope, $window, $uibModal, $controller, dataProvider, groupingsService, Message) {
 
         $scope.adminsList = [];
         $scope.pagedItemsAdmins = [];
@@ -60,10 +59,6 @@
          * from $scope.displayGroupingInNewTab
          */
         $scope.init = () => {
-
-            userService.getCurrentUser().then((res) => {
-                $scope.currentUser = res;
-            });
 
             const manageSubjectGrouping = JSON.parse(sessionStorage.getItem("manageSubjectGrouping"));
             if (!_.isEmpty(manageSubjectGrouping)) {

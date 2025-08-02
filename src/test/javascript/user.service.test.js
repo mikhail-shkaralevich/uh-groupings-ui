@@ -1,4 +1,4 @@
-// /* global inject */
+/* global inject */
 
 describe("UserService", function () {
 
@@ -9,15 +9,14 @@ describe("UserService", function () {
     let $q;
     let $rootScope;
     let $window;
-    let mockSessionStorage = {}; // Mock object for sessionStorage.
 
     const mockUser = {
         uid: 'testiwta',
         uhUuid: '99997010'
     }
 
-    beforeEach(inject((_gropingsService_) => {
-        groupingsService = _gropingsService_;
+    beforeEach(inject((_groupingsService_) => {
+        groupingsService = _groupingsService_;
 
         spyOn(groupingsService, 'getCurrentUser').and.callFake((onSuccess) => {
             onSuccess(mockUser);

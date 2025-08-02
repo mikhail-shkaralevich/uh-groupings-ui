@@ -12,7 +12,7 @@
      * @param groupingsService - service for creating requests to the groupings API
      */
 
-    function GeneralJsController($scope, $controller, $window, $uibModal, groupingsService, dataProvider ) {
+    function GeneralJsController($scope, $controller, $window, $uibModal, userService, groupingsService, dataProvider ) {
         // This is a regex Pattern that contains all valid UH Identifiers which consists of uid (Username) and uhUuid (UH Numbers) chars.
         $scope.uhIdentifierPattern = new RegExp("^[_?a-z-?@?0-9]{2,64}$");
         $scope.currentUser = {};
@@ -30,6 +30,13 @@
         $scope.availableProfiles = [];
 
         angular.extend(this, $controller("TableJsController", { $scope }));
+
+        userService.getCurrentUser().then((res) => {
+            $scope.currentUser = {
+                uid: res.data.uid,
+                uhUuid: res.data.uhUuid
+            };
+        });
 
         /**
          * Shows/hides admin tabs: Manage Groupings, Manage Admins, Manage Subject

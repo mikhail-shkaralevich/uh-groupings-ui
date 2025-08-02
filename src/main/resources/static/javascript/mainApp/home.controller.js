@@ -7,21 +7,13 @@
      * @param $scope - binding between controller and HTML page
      * @param $controller - service for instantiating controllers
      * @param groupingsService - service for creating requests to the groupings API
-     * @param userService - service for management of a logged-in user.
      * @param Message - display messages
      */
-    function HomeJsController($scope, $controller, groupingsService, userService, Message) {
+    function HomeJsController($scope, $controller, groupingsService, Message) {
 
         angular.extend(this, $controller('GeneralJsController', {$scope}));
 
         $scope.init = () => {
-
-            /**
-             * Get the uid of the current user, set the uid to the scope in general controller
-             */
-            userService.getCurrentUser().then((res) => {
-                $scope.currentUser = res;
-            });
 
             /**
              * Get the number of memberships that the current user is associated with.

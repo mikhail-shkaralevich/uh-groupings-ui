@@ -6,14 +6,12 @@
      * This controller contains functions specific to the feedback page.
      * @param $scope - binding between controller and HTML page
      * @param $controller - service for instantiating controllers
-     * @param userService - service for management of a logged-in user.
      * @param Message - display messages
      */
-    function FeedbackJsController($scope, $controller, userService, Message) {
+    function FeedbackJsController($scope, $controller, Message) {
         // regex pattern for email to follow recipient@domain.TLD format
         $scope.emailPattern = new RegExp("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
-        // assigned value in groupingsService.getCurrentUser
-        $scope.feedbackEmail = userService.getUid() + Message.Csv.EMAIL_SUFFIX;
+        $scope.feedbackEmail = $scope.currentUser.uid + Message.Csv.EMAIL_SUFFIX;
 
         angular.extend(this, $controller("GeneralJsController", { $scope }));
 

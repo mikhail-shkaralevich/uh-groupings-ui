@@ -10,10 +10,11 @@ describe("GeneralController", () => {
     let httpBackend;
     let BASE_URL;
     let gs;
+    let us;
     let uibModal;
     let window;
 
-    beforeEach(inject(($rootScope, $controller, _BASE_URL_, _$httpBackend_, groupingsService, $uibModal, _$window_) => {
+    beforeEach(inject(($rootScope, $controller, _BASE_URL_, _$httpBackend_, groupingsService, userService, $uibModal, _$window_) => {
         scope = $rootScope.$new(true);
         window = {
             location: {
@@ -28,6 +29,7 @@ describe("GeneralController", () => {
         httpBackend = _$httpBackend_;
         BASE_URL = _BASE_URL_;
         gs = groupingsService;
+        us = userService;
         uibModal = $uibModal;
     }));
 
@@ -44,6 +46,26 @@ describe("GeneralController", () => {
         expect(scope.disableFirstAndPrev).toBeDefined();
         expect(scope.disableNextAndLast).toBeDefined();
         expect(scope.sortBy).toBeDefined();
+    });
+
+    describe("get current user", () => {
+        beforeEach(() => {
+            spyOn(gs, "getCurrentUser").and.callFake((callback) => {
+                callback({
+                    data: {
+                        uid: "testiwta",
+                        uhUuid: "99997010"
+                    }
+                });
+            });
+        });
+
+        it("should initialize currentUser in scope", () => {
+            expect(us.getCurrentUser).toHaveBeenCalled();
+            expect(gs.getCurrentUser).toHaveBeenCalled();
+            expect(scope.currentUser.uid).toEqual("testiwta");
+            expect(scope.currentUser.uhUuid).toEqual("99997010");
+        });
     });
 
     // Set up mock data

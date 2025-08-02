@@ -45,6 +45,7 @@ describe("AdminController", function () {
         });
         BASE_URL = _BASE_URL_;
         gs = groupingsService;
+        us = userService;
         httpBackend = _$httpBackend_;
         uibModal = $uibModal;
         spyOn($uibModal, "open").and.returnValue(fakeModal);

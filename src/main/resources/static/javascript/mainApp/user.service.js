@@ -42,7 +42,7 @@
                     // if a request is already in progress, return the existing promise
                     return userPromise;
                 }
-                
+
                 // No user loaded and no request in progress, make the API call
                 let deferred = $q.defer(); // Create a deferred object to turn the callback into a promise.
                 userPromise = deferred.promise;
