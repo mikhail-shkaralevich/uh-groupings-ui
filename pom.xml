@@ -21,7 +21,7 @@
         <java.version>17</java.version>
         <org.apereo.cas.client-version>4.0.4</org.apereo.cas.client-version>
 
-        <jquery-version>3.7.1</jquery-version>
+        <jquery-version>4.0.0</jquery-version>
         <angular-mocks-version>1.8.3</angular-mocks-version>
         <angular-ui-bootstrap-version>2.5.0</angular-ui-bootstrap-version>
 
